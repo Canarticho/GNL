@@ -14,7 +14,8 @@ SRC=ft_bzero.c\
 	list.c\
 	main.c\
 	ft_putnbr.c\
-	ft_putchar.c
+	ft_putchar.c\
+	ft_strncpy.c
 
 OBJ_NAME=$(SRC:.c=.o)
 
