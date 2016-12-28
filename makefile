@@ -11,7 +11,6 @@ SRC=ft_bzero.c\
 	ft_strlen.c\
 	ft_strndup.c\
 	get_next_line.c\
-	list.c\
 	main.c\
 	ft_putnbr.c\
 	ft_putchar.c\
