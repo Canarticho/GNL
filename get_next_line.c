@@ -6,7 +6,7 @@
 /*   By: chle-van <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 09:30:40 by chle-van          #+#    #+#             */
-/*   Updated: 2017/02/10 07:08:27 by chle-van         ###   ########.fr       */
+/*   Updated: 2017/02/12 06:00:48 by chle-van         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 int		ft_readbuff(t_buff *buff)
 {
 	if (!(buff->buff = ft_strnew(BUFF_SIZE)))
+	{
+		buff->size = -1;
 		return (-1);
+	}
 	buff->size = read(buff->fd, buff->buff, BUFF_SIZE);
 	if (buff->size <= 0)
 	{
@@ -32,17 +35,17 @@ int		ft_extract_line(t_buff *buff, char **line, char *eol)
 
 	if (buff->size == 0)
 	{
-		tmp = ft_strdup(buff->buff);
 		if (buff->buff[0] == '\0')
 		{
 			free(buff->buff);
 			return (0);
 		}
+		tmp = ft_strdup(buff->buff);
 		*line = tmp;
 		free(buff->buff);
 		return (1);
 	}
-	res = ft_strndup(buff->buff, (eol - buff->buff - 1));
+	res = ft_strndup(buff->buff, (eol - buff->buff));
 	tmp = ft_strdup(++eol);
 	free(buff->buff);
 	buff->buff = tmp;
@@ -65,7 +68,7 @@ int		ft_get_line(t_buff *buff, char **line)
 		ft_strcpy(tmp, buff->buff);
 		free(buff->buff);
 	}
-	if (ft_readbuff(buff) > 0)
+	if (buff->size && ft_readbuff(buff) > 0)
 	{
 		ft_strcat(tmp, buff->buff);
 		free(buff->buff);
