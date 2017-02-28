@@ -6,7 +6,7 @@
 /*   By: chle-van <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 01:30:52 by chle-van          #+#    #+#             */
-/*   Updated: 2017/02/07 04:10:24 by chle-van         ###   ########.fr       */
+/*   Updated: 2017/02/12 05:59:09 by chle-van         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,6 @@ char	*ft_strndup(const char *s, size_t n)
 
 	if (!(tmp = ft_strnew(n)))
 		return (NULL);
-	ft_strlcpy(tmp, s, n + 1);
+	ft_strncpy(tmp, s, n);
 	return (tmp);
 }

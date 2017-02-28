@@ -6,7 +6,7 @@
 /*   By: chle-van <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 09:42:40 by chle-van          #+#    #+#             */
-/*   Updated: 2017/02/12 06:14:51 by chle-van         ###   ########.fr       */
+/*   Updated: 2017/02/28 11:06:12 by chle-van         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ typedef struct		s_buff
 {
 	char			*buff;
 	int				fd;
-	int				size;
+	int				siz;
 	struct s_buff	*next;
 }					t_buff;
 

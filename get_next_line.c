@@ -6,7 +6,7 @@
 /*   By: chle-van <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 09:30:40 by chle-van          #+#    #+#             */
-/*   Updated: 2017/02/12 06:00:48 by chle-van         ###   ########.fr       */
+/*   Updated: 2017/02/28 12:13:31 by chle-van         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,18 @@
 
 int		ft_readbuff(t_buff *buff)
 {
+	int size;
+
 	if (!(buff->buff = ft_strnew(BUFF_SIZE)))
 	{
-		buff->size = -1;
+		buff->siz = -1;
 		return (-1);
 	}
-	buff->size = read(buff->fd, buff->buff, BUFF_SIZE);
-	if (buff->size <= 0)
+	size = read(buff->fd, buff->buff, BUFF_SIZE);
+	if (size <= 0)
 	{
-		free(buff->buff);
-		return (buff->size);
+		buff->siz = size;
+		return (buff->siz);
 	}
 	return (1);
 }
@@ -33,17 +35,18 @@ int		ft_extract_line(t_buff *buff, char **line, char *eol)
 	char *tmp;
 	char *res;
 
-	if (buff->size == 0)
+	if (buff->siz == 0)
 	{
 		if (buff->buff[0] == '\0')
 		{
 			free(buff->buff);
 			return (0);
 		}
-		tmp = ft_strdup(buff->buff);
-		*line = tmp;
+		*line = ft_strdup(buff->buff);
 		free(buff->buff);
-		return (1);
+		if (*line)
+			return (1);
+		return (-1);
 	}
 	res = ft_strndup(buff->buff, (eol - buff->buff));
 	tmp = ft_strdup(++eol);
@@ -60,27 +63,20 @@ int		ft_get_line(t_buff *buff, char **line)
 	char	*tmp;
 	char	*eol;
 
-	if (buff->buff && (((eol = ft_strchr(buff->buff, '\n'))) || !buff->size))
-		return (ft_extract_line(buff, line, eol));
-	tmp = ft_strnew(ft_strlen(buff->buff) + BUFF_SIZE + 1);
-	if (buff->buff && buff->size)
+	while (!(eol = ft_strchr(buff->buff, '\n')) && buff->siz > 0)
 	{
+		if (!(tmp = ft_strnew(buff->siz + BUFF_SIZE)))
+			return (-1);
 		ft_strcpy(tmp, buff->buff);
 		free(buff->buff);
-	}
-	if (buff->size && ft_readbuff(buff) > 0)
-	{
-		ft_strcat(tmp, buff->buff);
+		if (ft_readbuff(buff) > 0)
+			buff->siz = ft_strlcat(tmp, buff->buff, buff->siz + BUFF_SIZE + 1);
 		free(buff->buff);
 		buff->buff = tmp;
-		return (ft_get_line(buff, line));
 	}
-	if (!buff->size)
-	{
-		buff->buff = tmp;
-		return (ft_get_line(buff, line));
-	}
-	return (buff->size);
+	if (buff->siz >= 0 && buff->buff)
+		return (ft_extract_line(buff, line, eol));
+	return (buff->siz);
 }
 
 t_buff	*ft_addfd(t_buff *list, int fd)
@@ -89,9 +85,9 @@ t_buff	*ft_addfd(t_buff *list, int fd)
 	t_buff	*tmp;
 
 	new = (t_buff *)malloc(sizeof(*list));
-	new->buff = NULL;
+	new->buff = ft_strnew(1);
 	new->fd = fd;
-	new->size = -1;
+	new->siz = 1;
 	new->next = NULL;
 	if (!list)
 	{
@@ -110,16 +106,16 @@ int		get_next_line(const int fd, char **line)
 	static t_buff	*list;
 	t_buff			*tmp;
 
-	if (fd < 0)
+	if (fd < 0 || !line)
 		return (-1);
 	if (!list)
 		list = ft_addfd(list, fd);
 	tmp = list;
-	while (tmp && tmp->fd)
+	while (tmp)
 	{
 		if (fd == tmp->fd)
 		{
-			if (tmp->size == 0)
+			if (tmp->siz == 0)
 				return (0);
 			return (ft_get_line(tmp, line));
 		}
