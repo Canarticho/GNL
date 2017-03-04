@@ -6,13 +6,13 @@
 /*   By: chle-van <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 09:42:40 by chle-van          #+#    #+#             */
-/*   Updated: 2017/03/03 06:40:17 by chle-van         ###   ########.fr       */
+/*   Updated: 2017/03/04 07:12:08 by chle-van         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# define BUFF_SIZE 1
+# define BUFF_SIZE 16
 # include <stdlib.h>
 # include <sys/types.h>
 # include <sys/uio.h>

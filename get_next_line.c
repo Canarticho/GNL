@@ -6,7 +6,7 @@
 /*   By: chle-van <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/19 09:30:40 by chle-van          #+#    #+#             */
-/*   Updated: 2017/03/03 06:47:09 by chle-van         ###   ########.fr       */
+/*   Updated: 2017/03/04 07:11:50 by chle-van         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,26 +83,16 @@ t_buff	*ft_addfd(t_buff *list, int fd, int task)
 
 	new = NULL;
 	if (task == 0)
-	{
-		new = (t_buff *)malloc(sizeof(*list));
-		new->buff = ft_strnew(1);
-		new->fd = fd;
-		new->siz = 1;
-		new->next = NULL;
-		if (!list)
-		{
-			list = new;
-			return (list);
-		}
-		list->next = new;
+		;
+	new = (t_buff *)malloc(sizeof(*list));
+	new->buff = ft_strnew(1);
+	new->fd = fd;
+	new->siz = 1;
+	new->next = NULL;
+	if (!list)
 		return (new);
-	}
-	while (list->next && !list->next->fd == fd)
-		new = list->next;
-	free(list->buff);
-	free(list);
-	list = new;
-	return (NULL);
+	list->next = new;
+	return (new);
 }
 
 int		get_next_line(const int fd, char **line)
@@ -113,18 +103,18 @@ int		get_next_line(const int fd, char **line)
 	if (fd < 0 || !line)
 		return (-1);
 	if (!list)
-		list = ft_addfd(&list, fd, 0);
+		list = ft_addfd(list, fd, 0);
 	tmp = list;
 	while (tmp->next || tmp->fd == fd)
 	{
 		if (fd == tmp->fd)
-		{			
-			if (tmp->siz == 0)
+		{
+			if (tmp->siz <= 0)
 			{
-				ft_addfd(list, fd);
+				tmp->fd = -1;
 				return (get_next_line(fd, line));
 			}
-					return (ft_get_line(tmp, line));
+			return (ft_get_line(tmp, line));
 		}
 		tmp = tmp->next;
 	}
